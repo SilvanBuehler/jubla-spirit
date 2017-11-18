@@ -1,0 +1,20 @@
+<h1>Benutzer</h1>
+
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th class="hidden-xs">E-Mail</th>
+    <th>Rolle</th>
+  </tr>
+  </thead>
+  <tbody>
+    <% @users.each do |user| %>
+        <tr>
+            <td><%= link_to user.name, user_path(user)  %></td>
+            <td class="hidden-xs"><%= user.email %></td>
+            <td><%= get_role_label(user.role) %></td>
+        </tr>
+    <% end %>
+  </tbody>
+</table>

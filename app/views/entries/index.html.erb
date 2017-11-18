@@ -1,0 +1,127 @@
+<h1>Suchen</h1>
+
+<div class="row">
+  <div class="col-sm-3">
+
+    <h2>Filter</h2>
+
+    <div class="result-filter">
+      <%= form_for_filterrific @filterrific do |f| %>
+        <div>
+          <%= f.check_box :only_programs, disabled: @hide_programs, onclick: "update_checkboxes();" %> Komplette Gruppenstunde<br>
+          <%= f.check_box :with_part_start, disabled: @only_programs, onclick: "update_checkboxes();" %> Spiel für Einleitung<br>
+          <%= f.check_box :with_part_main, disabled: @only_programs, onclick: "update_checkboxes();" %> Spiel für Hauptteil<br>
+          <%= f.check_box :with_part_end, disabled: @only_programs, onclick: "update_checkboxes();" %> Spiel für Schluss
+        </div>
+        <div>
+          <%= f.check_box :with_age_5  %> 5 - 7 Jahre<br>
+          <%= f.check_box :with_age_8  %> 8 - 11 Jahre<br>
+          <%= f.check_box :with_age_12 %> 12 - 14 Jahre<br>
+          <%= f.check_box :with_age_15 %> 15 - 16 Jahre<br>
+          <%= f.check_box :with_age_17 %> 17+ Jahre
+        </div>
+        <div>
+          <%= f.check_box :with_indoors  %> Drinnen<br>
+          <%= f.check_box :with_outdoors %> Draussen
+        </div>
+        <div>
+          <%= f.check_box :with_act_active   %> Bewegt<br>
+          <%= f.check_box :with_act_calm     %> Ruhig<br>
+          <%= f.check_box :with_act_creative %> Kreativ<br>
+          <%= f.check_box :with_act_talk     %> Gesprächig
+        </div>
+        <div>
+          <%= f.check_box :with_cat_game  %> Spiel &amp; Sport
+            <span data-toggle="modal" data-target="#modal_cat_game">(?)</span><br>
+          <%= f.check_box :with_cat_shape %> Gestalten
+            <span data-toggle="modal" data-target="#modal_cat_shape">(?)</span><br>
+          <%= f.check_box :with_cat_group %> Gruppengeist
+            <span data-toggle="modal" data-target="#modal_cat_group">(?)</span><br>
+          <%= f.check_box :with_cat_jubla %> Jubla-Wissen
+            <span data-toggle="modal" data-target="#modal_cat_jubla">(?)</span>
+        </div>
+        <div>
+          Gruppengrösse:<br>
+          <%= f.select(:num_group_min, @filterrific.select_options[:num_group]) %> -
+          <%= f.select(:num_group_max, @filterrific.select_options[:num_group]) %> Kinder
+        </div>
+        <div>
+          Zeit:<br>
+          <%= f.select(:num_time_min, @filterrific.select_options[:num_time]) %> -
+          <%= f.select(:num_time_max, @filterrific.select_options[:num_time]) %>
+        </div>
+        <div>
+          Suchen:<br>
+          <%= f.text_field(
+            :search_query,
+            class: 'filterrific-periodically-observed'
+          ) %>
+        </div>
+        <div>
+          Sortiert nach:<br>
+          <%= f.select(:sorted_by, @filterrific.select_options[:sorted_by]) %>
+        </div>
+        <div>
+          <%= f.submit 'Suchen', class: "btn btn-primary" %>
+        </div>
+        <div>
+          <%= link_to(
+            'Filter zurücksetzen',
+            reset_filterrific_url,
+          ) %>
+        </div>
+        <%= render_filterrific_spinner %>
+      <% end %>
+    </div>
+
+  </div>
+  <div class="col-sm-<%= if @plan then "6" else "9" end %>">
+  
+    <h2>Ergebnisse</h2>
+
+    <%= render(
+      partial: 'entries/list',
+      locals: { entries: @entries,
+                programs: @programs,
+                hide_programs: @hide_programs,
+                only_programs: @only_programs }
+    ) %>
+
+  </div>
+  <% if @plan %>
+    <div class="col-sm-3">
+
+      <h2>Deine Gruppenstunde</h2>
+
+      <h3>Einleitung</h3>
+      <%= render(
+        partial: 'entries/plan',
+        locals: { list: @plan_start, part: 'start' }
+      ) %>
+
+      <h3>Hauptteil</h3>
+      <%= render(
+        partial: 'entries/plan',
+        locals: { list: @plan_main, part: 'main' }
+      ) %>
+
+      <h3>Schluss</h3>
+      <%= render(
+        partial: 'entries/plan',
+        locals: { list: @plan_end, part: 'end' }
+      ) %>
+
+      <%= link_to('Anschauen', {:controller => "programs", :action => "show", :id => 0}, :class => "btn btn-primary") %>
+
+    </div>
+  <% end %>
+</div>
+
+<script>
+  $(".filterrific-periodically-observed").filterrific_observe_field(
+    0.5,
+    Filterrific.submitFilterForm
+  );
+</script>
+
+<%= render 'entries/explanations' %>

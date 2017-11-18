@@ -1,0 +1,65 @@
+<div class="row">
+  <div class="col-sm-4">
+    <h1>
+      <%= @entry.title %><br>
+      <small><%= @entry.title_other %></small>
+    </h1>
+  </div>
+  <div class="col-sm-7 hidden-xs">
+    <%= render partial: 'entries/buttons', locals: { id: "1" } %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-9">
+    <%= render 'description' %>
+    <%= render partial: 'attachments/list', locals: { attachments: @entry.attachments, published: @entry.published } if not @entry.attachments.empty? %>
+  </div>
+
+  <div class="col-sm-3">
+    <%= render 'details' %>
+    <h3>Bewertung</h3>
+    <p class='rating-area'>
+      <%= link_to rate_entry_path(@entry, rating: '1'), method: :post do %>
+        <span class="glyphicon glyphicon-star<%= rating_comp(@entry.rating, 0.5) %>"></span>
+      <% end %>
+      <%= link_to rate_entry_path(@entry, rating: '2'), method: :post do %>
+        <span class="glyphicon glyphicon-star<%= rating_comp(@entry.rating, 1.5) %>"></span>
+      <% end %>
+      <%= link_to rate_entry_path(@entry, rating: '3'), method: :post do %>
+        <span class="glyphicon glyphicon-star<%= rating_comp(@entry.rating, 2.5) %>"></span>
+      <% end %>
+      <%= link_to rate_entry_path(@entry, rating: '4'), method: :post do %>
+        <span class="glyphicon glyphicon-star<%= rating_comp(@entry.rating, 3.5) %>"></span>
+      <% end %>
+      <%= link_to rate_entry_path(@entry, rating: '5'), method: :post do %>
+        <span class="glyphicon glyphicon-star<%= rating_comp(@entry.rating, 4.5) %>"></span>
+      <% end %><br>
+      <% if @entry.ratings.exists? %>
+        <%= @entry.rating %> Sterne
+        (<%= @entry.ratings.count %>
+        <%= if@entry.ratings.count == 1 then 'Bewertung' else 'Bewertungen' end %>)
+      <% else %>
+        Noch keine Bewertungen
+      <% end %>
+    </p>
+    <h2>Autor</h2>
+    <% if @entry.user %>
+      <p><%= link_to(@entry.user.name, user_path(@entry.user)) %></p>
+    <% else %>
+      Konto gelöscht
+    <% end %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <%= render partial: 'comments/create', locals: { res: @entry } %>
+  </div>
+</div>
+
+<div class="row visible-xs-block">
+  <div class="col-xs-12">
+    <%= render partial: 'entries/buttons', locals: { id: "2" } %>
+  </div>
+</div>

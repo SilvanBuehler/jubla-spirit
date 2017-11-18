@@ -1,0 +1,64 @@
+<div id="filterrific_results">
+
+  <table class="table result-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Bewertung</th>
+        <th class="hidden-xs">Details</th>
+      </tr>
+    </thead>
+
+    <% if not only_programs %>
+      <% entries.each do |entry| %>
+        <tr>
+          <td><%= link_to(entry.title, entry_path(entry)) %></td>
+          <td><%= if entry.rating then entry.rating else '-' end %> (<%= entry.ratings.count %>)</td>
+          <% if entry.title_other != "" %>
+            <td class="hidden-xs">Weitere Namen: <%= sanitize(entry.title_other[0..200], :tags=>[]) %></td>
+          <% else %>
+            <td class="hidden-xs"><%= sanitize(entry.description[0..200], :tags=>[]) %></td>
+          <% end %>
+        </tr>
+        <% if not hide_programs %>
+          <% entry.programs.where(done: true, published: true).each do |program| %>
+            <% if not @shown_programs.include? program %>
+              <tr class="active">
+                <td><%= link_to(program.title, program_path(program)) %></td>
+                <td><%= if program.rating then program.rating else '-' end %> (<%= program.ratings.count %>)</td>
+                <td class="hidden-xs">Gruppenstunden-Vorschlag mit dem Spiel "<%= entry.title %>"</td>
+              </tr>
+              <% @shown_programs << program %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+    <% else %>
+      <% entries.each do |program| %>
+        <tr class="active">
+          <td><%= link_to(program.title, program_path(program)) %></td>
+          <td><%= if program.rating then program.rating else '-' end %> (<%= program.ratings.count %>)</td>
+          <td class="hidden-xs">
+            <% program.entries.each_with_index do |entry, i| %>
+              <%= if i==program.entries.count-1 then entry.title else "#{entry.title}, " end %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+
+    <% end %>
+
+  </table>
+
+  <% if entries.empty? %>
+    <p>Leider keine Ergebnisse gefunden</p>
+  <% end %>
+
+  <% if not only_programs %>
+    <%= will_paginate entries %>
+  <% else %>
+    <%= will_paginate programs %>
+  <% end %>
+
+</div>

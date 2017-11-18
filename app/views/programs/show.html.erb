@@ -1,0 +1,78 @@
+<div class="row">
+  <div class="col-sm-4">
+    <h1>
+      <%= if @edit then link_to @program.title, edit_program_path(@program) else @program.title end %>
+    </h1>
+  </div>
+  <div class="col-sm-7 hidden-xs">
+    <%= render 'buttons' %>
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-sm-9">
+
+    <% if @plan %>
+      <%= render 'description_plan' %>
+    <% else %>
+      <%= render 'description' %>
+    <% end %>
+
+    <%= render partial: 'attachments/list', locals: { attachments: @attachments, published: true } unless @attachments.empty? %>
+
+  </div>
+  <div class="col-sm-3">
+    <%= render 'details' %>
+
+    <% if not @plan %>
+      <h3>Bewertung</h3>
+      <p class='rating-area'>
+        <%= link_to rate_program_path(@program, rating: '1'), method: :post do %>
+          <span class="glyphicon glyphicon-star<%= rating_comp(@program.rating, 0.5) %>"></span>
+        <% end %>
+        <%= link_to rate_program_path(@program, rating: '2'), method: :post do %>
+          <span class="glyphicon glyphicon-star<%= rating_comp(@program.rating, 1.5) %>"></span>
+        <% end %>
+        <%= link_to rate_program_path(@program, rating: '3'), method: :post do %>
+            <span class="glyphicon glyphicon-star<%= rating_comp(@program.rating, 2.5) %>"></span>
+        <% end %>
+        <%= link_to rate_program_path(@program, rating: '4'), method: :post do %>
+            <span class="glyphicon glyphicon-star<%= rating_comp(@program.rating, 3.5) %>"></span>
+        <% end %>
+        <%= link_to rate_program_path(@program, rating: '5'), method: :post do %>
+          <span class="glyphicon glyphicon-star<%= rating_comp(@program.rating, 4.5) %>"></span>
+        <% end %><br>
+        <% if @program.ratings.exists? %>
+          <%= @program.rating %> Sterne
+          (<%= @program.ratings.count %>
+          <%= if@program.ratings.count == 1 then 'Bewertung' else 'Bewertungen' end %>)
+        <% else %>
+          Noch keine Bewertungen
+        <% end %>
+      </p>
+      <h2>Autor</h2>
+      <% if @program.user %>
+        <p><%= link_to(@program.user.name, user_path(@program.user)) %></p>
+      <% else %>
+        Konto gelöscht
+      <% end %>
+    <% end %>
+    
+  </div>
+</div>
+
+<% if not @plan %>
+  <div class="row">
+    <div class="col-sm-12">
+      <%= render  partial: 'comments/create', locals: { res: @program } %>
+    </div>
+  </div>
+<% end %>
+
+<div class="row visible-xs-block">
+  <div class="col-xs-12">
+    <%= render 'buttons' %>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+<%= render partial: 'programs/entries', locals: {title: 'Einstieg',  start_order: 100, end_order: 199} %>
+<%= render partial: 'programs/entries', locals: {title: 'Hauptteil', start_order: 200, end_order: 299} %>
+<%= render partial: 'programs/entries', locals: {title: 'Ausstieg',  start_order: 300, end_order: 399} %>
+
+
+<% if not @program.material.empty? %>
+  <h2>Material</h2>
+  <ul>
+    <% @program.material.split(/\r?\n/).each do |t| %>
+      <li><%= "#{t}" %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% if not @program.remarks.empty? %>
+  <h2>Bemerkungen</h2>
+    <ul>
+      <% @program.remarks.split(/\r?\n/).each do |t| %>
+          <li><%= t %></li>
+      <% end %>
+    </ul>
+<% end %>
+
+<% if not @program.preparation.empty? %>
+  <h2>Vorbereitungen</h2>
+    <ul>
+      <% @program.preparation.split(/\r?\n/).each do |t| %>
+          <li><%= t %></li>
+      <% end %>
+    </ul>
+<% end %>

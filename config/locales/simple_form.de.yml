@@ -1,0 +1,9 @@
+de:
+  simple_form:
+    "yes": 'Ja'
+    "no": 'Nein'
+    required:
+      text: 'erforderlich'
+      mark: '*'
+    error_notification:
+      default_message: '<a class="close" data-dismiss="alert">&times;</a>Es wurden Fehler gefunden, bitte überprüfe die Eingabe:'

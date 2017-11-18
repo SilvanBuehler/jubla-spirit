@@ -1,0 +1,77 @@
+<h2>Kommentare</h2>
+
+<table class="table table-responsive table-comment">
+  <% if user_signed_in? and current_user.is_moderator? %>
+    <% res.comments.each do |comment| %>
+        <tr>
+          <td><%= comment.user.name %></td>
+          <td><%= comment.text %></td>
+          <td>
+            <% if not comment.published %>
+              <%= link_to 'Veröffentlichen', publish_comment_path(comment), method: :post, class: "btn btn-danger btn-space" %>
+            <% end %>
+            <% if comment.delete_comment != nil %>
+              <div class="btn-group btn-space">
+                <%= link_to 'Entfernen', destroy_final_comment_path(comment), method: :post, class: "btn btn-danger btn-space"%>
+                <%= link_to 'Behalten', keep_comment_path(comment), method: :post, class: "btn btn-success btn-space"%>
+              </div>
+            <% end %>
+          </td>
+          <td>
+            <a href="#" data-toggle="modal" data-target="#delete-modal-comment" data-id=<%= comment.id %>>
+              <span class="glyphicon glyphicon-remove"></span>
+            </a>
+          </td>
+        </tr>
+    <% end %>
+  <% else %>
+    <% res.comments.where(published: true).each do |comment| %>
+        <tr>
+          <td><%= comment.user.name %></td>
+          <td><%= comment.text %></td>
+          <td>
+            <a href="#" data-toggle="modal" data-target="#delete-modal-comment" data-id=<%= comment.id %>>
+              <span class="glyphicon glyphicon-remove"></span>
+            </a>
+          </td>
+        </tr>
+    <% end %>
+  <% end %>
+</table>
+
+<a data-toggle="collapse" href="#collapseComment">
+  Kommentar verfassen
+</a>
+<div class="collapse" id="collapseComment">
+  <div class="well">
+    <%= simple_form_for [res, res.comments.build] do |f| %>
+      <%= f.input :text, label: 'Kommentar', hint: 'Spitzname wird angezeigt' %>
+      <%= f.button :submit, 'Kommentieren' %>
+    <% end %>
+  </div>
+</div>
+
+<%= form_tag(url_for(controller: "comments", action: "destroy"), method: "delete") do %>
+  <div class="modal fade" id="delete-modal-comment" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Löschung eines Kommentars beantragen</h4>
+        </div>
+        <div class="modal-body">
+          <p>Bitte gib einen Grund an, warum der Kommentar gelöscht werden soll. Die Moderatoren werden deinen Antrag prüfen und ihn gegebenenfalls entfernen.</p>
+          <%= label_tag(:hint, "Löschgrund:") %>
+          <%= text_field_tag(:hint, '', size: 75) %>
+          <%= hidden_field_tag(:comment_id, '') %>
+          <i>Beispiel: Kommentar ist beleidigend.</i>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
+          <%= submit_tag("Löschen beantragen", class: "btn btn-danger") %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+<script>init_delete_modal_comment()</script>

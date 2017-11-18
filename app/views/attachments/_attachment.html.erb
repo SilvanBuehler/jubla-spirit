@@ -1,0 +1,27 @@
+<div class="attachment">
+  <span class="attachment_image">
+    <%= link_to attachment.file.url do %>
+      <% if attachment.file.content_type =~ /\Aimage\/.*\z/ %>
+        <%= image_tag attachment.file.url(:thumb), height: '100' %>
+      <% else %>
+        <span class="glyphicon glyphicon-download-alt"></span>
+      <% end %>
+    <% end %>
+  </span>
+  <div>
+    <span class="attachment_name"><%= attachment.file.original_filename %></span>
+    <a href="#" data-toggle="modal" data-target="#delete-modal-attach" data-id=<%= attachment.id %>>
+      <span class="glyphicon glyphicon-remove"></span>
+    </a>
+  </div>
+  <% if user_signed_in? and current_user.is_moderator? %>
+    <% if attachment.delete_comment != nil %>
+      <div class="btn-group btn-space">
+        <%= link_to 'Löschen', destroy_final_attachment_path(attachment), method: :post, class: "btn btn-danger btn-space"%>
+      </div>
+      <div class="btn-group btn-space">
+        <%= link_to 'Behalten', keep_attachment_path(attachment), method: :post, class: "btn btn-success btn-space" %>
+      </div>
+    <% end %>
+  <% end %>
+</div>
